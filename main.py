@@ -2,7 +2,6 @@ from calc_core import calc
 from input_utils import ask_number
 
 def run_calculator():
-    """Пункт 1: спросить выражение, посчитать, показать результат."""
     expr = input("Введите выражение (или 'exit'): ").strip()
     if expr == "exit":
         return
