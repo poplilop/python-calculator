@@ -1,14 +1,32 @@
+import json
+import os
 from calc_core import calc
 from input_utils import ask_number
 
+HISTORY_FILE = 'history.json'
+
+def save_history(expr, result):
+    history = load_history()
+    history.append({'expr': expr, 'result': result})
+    history = history[-5:]
+
+    with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
+        json.dump(history, f, indent=4)
+
+def load_history():
+    if not os.path.exists(HISTORY_FILE):
+        return []
+    with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
 def run_calculator():
-    """Пункт 1: спросить выражение, посчитать, показать результат."""
     expr = input("Введите выражение (или 'exit'): ").strip()
     if expr == "exit":
         return
     try:
         result = calc(expr)
         print(f"Ответ: {result}")
+        save_history(expr, result)
     except (ValueError, ZeroDivisionError) as e:
         print(f"Ошибка: {e}")
 
@@ -54,6 +72,12 @@ def run_pythagoras():
         print("Неверное число")
 
 def main():
+    history = load_history()
+    if history:
+        print('\n--- Последние вычисления ---')
+        for item in history:
+            print(f'{item['expr']} = {item['result']}')
+        print('----------------------------')
     while True:
         print("\n0 - Выход")
         print("1 - Калькулятор")
@@ -77,7 +101,3 @@ def main():
             print("Нет такого пункта")
 if __name__ == "__main__":
     main()
-'''
-я увидел разницу: с if __name__ == "__main__": все норм, а без него просто импортирую модуль
-import main и сразу оно запускается
-'''
